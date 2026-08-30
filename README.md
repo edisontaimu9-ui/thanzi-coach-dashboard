@@ -39,6 +39,10 @@ One-time setup in the repo:
 
 `vite.config.js` sets `base: "/thanzi-coach-dashboard/"` to match this repo name — update it if you ever rename the repo.
 
+## PWA
+
+The dashboard is installable (Add to Home Screen on Android/iOS, or the install icon in a desktop browser). `vite-plugin-pwa` generates the manifest and service worker at build time — nothing to run manually. The service worker caches the app shell for offline/instant loading but always goes to the network for `/stats`, so you never see stale numbers. Icons live in `public/` (`icon-192.png`, `icon-512.png`, `icon-maskable-512.png`, `apple-touch-icon.png`).
+
 ## CORS note
 
 The dashboard fetches `https://thanzi-coach-whatsapp.edisontaimu9.workers.dev/stats` directly from the browser. The Worker needs to respond with an `Access-Control-Allow-Origin` header (e.g. `*`, or specifically `https://edisontaimu9-ui.github.io`) on `/stats`, or the fetch will fail with a CORS error once this is live on Pages.
