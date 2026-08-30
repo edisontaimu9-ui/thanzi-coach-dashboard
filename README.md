@@ -7,18 +7,31 @@ Monitoring dashboard for the Thanzi Coach WhatsApp bot (Cloudflare Worker `/stat
 ```
 src/
   config.js                # endpoint + token, shared everywhere
-  api/useStats.js          # data-fetching hook (fetch, auto-refresh, error state)
+  api/
+    useStats.js             # snapshot stats hook (fetch, auto-refresh, stale-cache fallback)
+    useTimeseries.js         # per-day trend hook (same caching pattern)
+    cache.js                 # localStorage read/write helper
   components/
     PulseLine.jsx
-    StatusBadge.jsx
+    StatusBadge.jsx           # live / syncing / stale / offline
     RangeSelector.jsx
     MetricCard.jsx
     BreakdownBars.jsx
+    TrendChart.jsx            # messages + new users per day
   App.jsx                  # assembles the dashboard
   main.jsx                 # React entry point
 ```
 
 Add new views as new components in `src/components/` and wire them into `App.jsx` (or add a router later if this grows into multiple pages).
+
+## Offline / stale-data handling
+
+Every successful fetch is cached in `localStorage`, keyed by endpoint + day-range. If a later fetch fails (offline, CORS hiccup, worker down), the dashboard falls back to the last cached result and shows an amber "stale" badge with the cache timestamp instead of a hard error. The red "offline" error screen only appears when there's no cached data at all yet (e.g. first-ever load with no connection).
+
+## Trend chart
+
+`GET /stats/timeseries?token=...&days=N` on the Worker returns a per-day series of `{ date, messages, new_users }`, zero-filled for every day in range. `TrendChart.jsx` renders it as a simple two-line SVG chart (messages in green, new users in amber) — no charting library needed for this data size.
+
 
 ## Local development
 
