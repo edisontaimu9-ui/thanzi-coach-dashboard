@@ -7,6 +7,7 @@ import RangeSelector from "./components/RangeSelector.jsx";
 import MetricCard from "./components/MetricCard.jsx";
 import BreakdownBars from "./components/BreakdownBars.jsx";
 import TrendChart from "./components/TrendChart.jsx";
+import FeedbackCard from "./components/FeedbackCard.jsx";
 
 export default function App() {
   const [days, setDays] = useState(30);
@@ -67,6 +68,8 @@ export default function App() {
             <TrendChart series={series} />
 
             <BreakdownBars data={data} />
+
+            <FeedbackCard data={data} days={days} />
           </>
         )}
 
